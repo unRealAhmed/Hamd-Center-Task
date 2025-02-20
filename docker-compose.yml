@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: hamd_center_api
+    build: .
+    ports:
+      - '8000:8000'
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=database
+    depends_on:
+      - database
+    restart: unless-stopped
+
+  database:
+    container_name: hamd_center_db
+    image: postgres:15
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DATABASE}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+    name: hamd_center_data
